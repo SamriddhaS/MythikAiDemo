@@ -1,6 +1,6 @@
 # MachineCodingRoundApp
 
-> A compact Android video-browsing app demonstrating MVVM + Clean Architecture, offline-first behavior, network monitoring, and an ExoPlayer-based video player. This repository is prepared for interview review — the README highlights architecture, key files, features, and how to run the project.
+> A demo app demonstrating MVVM + Clean Architecture, offline-first behavior, network monitoring, and an ExoPlayer-based video player. The README highlights architecture, key files, features, and how to run the project.
 
 ## Download APK
 
@@ -50,24 +50,13 @@ High-level architecture :
     - video player: [VideoPlayerScreen](app/src/main/java/com/example/machinecodingroundapp/ui/video_player_screen/VideoPlayerScreen.kt), [VideoPlayerViewModel](app/src/main/java/com/example/machinecodingroundapp/ui/video_player_screen/VideoPlayerViewModel.kt)
   - utils: [NetworkMonitor](app/src/main/java/com/example/machinecodingroundapp/utils/NetworkMonitor.kt)
 
-  
-Key files (click to open):
-
-- [MythikApplication.kt](app/src/main/java/com/example/machinecodingroundapp/MythikApplication.kt) — custom Coil ImageLoader + Hilt app annotation.
-- [MainActivity.kt](app/src/main/java/com/example/machinecodingroundapp/MainActivity.kt) — Compose host and `AppNavHost` wiring.
-- [NetworkModule.kt](app/src/main/java/com/example/machinecodingroundapp/di/NetworkModule.kt) — provides `Retrofit` & `OkHttp`.
-- [VideoApiService.kt](app/src/main/java/com/example/machinecodingroundapp/data/remote/VideoApiService.kt) — For calling the video api
-- [VideoDao.kt](app/src/main/java/com/example/machinecodingroundapp/data/local/VideoDao.kt) and [VideoEntity.kt](app/src/main/java/com/example/machinecodingroundapp/data/local/VideoEntity.kt) — Room schema and DAO.
-- [VideoRepositoryImpl.kt](app/src/main/java/com/example/machinecodingroundapp/data/repository/VideoRepositoryImpl.kt) — repository that bridges network + local DB.
-- [HomeScreen.kt](app/src/main/java/com/example/machinecodingroundapp/ui/home_screen/HomeScreen.kt) and [HomeViewModel.kt](app/src/main/java/com/example/machinecodingroundapp/ui/home_screen/HomeViewModel.kt) — list + carousel UI and state management.
-- [VideoPlayerScreen.kt](app/src/main/java/com/example/machinecodingroundapp/ui/video_player_screen/VideoPlayerScreen.kt) and [VideoPlayerViewModel.kt](app/src/main/java/com/example/machinecodingroundapp/ui/video_player_screen/VideoPlayerViewModel.kt) — ExoPlayer integration and fullscreen handling.
 
 ## Behavior details & design notes
 
 - Offline-first pattern: UI observes a Room Flow as the single source of truth and the `VideoRepositoryImpl.refreshVideos()` writes API responses to the DB. This means the UI reacts only to DB changes and remains consistent across network transitions.
 - Network handling: `NetworkMonitor` exposes an `isOnline` StateFlow. `HomeViewModel` uses this to avoid unnecessary network calls when offline and to trigger refresh when connectivity returns.
-- Single-player model: `PlayerModule` provides a singleton ExoPlayer instance. This simplifies state management for a single active playback session.
-- Error handling: `HomeViewModel` surfaces `Error` and `NoInternet` states; repository exceptions are surfaced to the ViewModel which decides whether to fallback to local DB.
+- Single-player model: `PlayerModule` provides a singleton ExoPlayer instance to maintain a single active playback session.
+- Error handling: `HomeViewModel` surfaces `Error` and `NoInternet` states; repository exceptions are sent to the ViewModel which decides whether to fallback to local DB.
 - Scoping & DI: Hilt modules are separated by concern (network, db, repo, usecases, player).
 
 ## Major dependencies
