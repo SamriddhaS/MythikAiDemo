@@ -30,35 +30,37 @@ https://drive.google.com/drive/folders/180eUrGQwzNPeJkMrIfmqLcbdsjcaDXMR?usp=sha
 
 This project follows clean architecture: data -> domain -> ui, combined with Hilt for DI and Jetpack Compose for UI.
 
-High-level diagram (text):
+High-level architecture (click any file to open it on GitHub):
 
-com.example.machinecodingroundapp
-├── data
-│   ├── local (Room: `VideoEntity`, `VideoDao`, `AppDatabase`)
-│   ├── remote (Retrofit DTOs & `VideoApiService`)
-│   ├── mappers (`VideoDto` <-> `VideoEntity` <-> domain `Video`)
-│   └── repository (`VideoRepositoryImpl`) 
-├── domain
-│   ├── model (`Video`)
-│   └── usecase (`GetAllVideosUseCase`, `GetRandomVideosUseCase`, `GetVideoByIdUseCase`)
-├── di (Hilt modules: `NetworkModule`, `DatabaseModule`, `RepositoryModule`, `UseCaseModule`, `PlayerModule`, `AppModule`)
-├── ui
-│   ├── navigation (`AppNavHost`, `NavRoutes`)
-│   ├── splash (`SplashScreen`)
-│   ├── home (`HomeScreen`, `VideoViewModel`)
-│   └── video player (`VideoPlayerScreen`, `VideoPlayerViewModel`, ExoPlayer integration)
-└── utils (`NetworkMonitor`)
+- com.example.machinecodingroundapp
+  - data
+    - local (Room): [VideoEntity](app/src/main/java/com/example/machinecodingroundapp/data/local/VideoEntity.kt), [VideoDao](app/src/main/java/com/example/machinecodingroundapp/data/local/VideoDao.kt), [AppDatabase](app/src/main/java/com/example/machinecodingroundapp/data/local/AppDatabase.kt)
+    - remote (Retrofit): [VideoDto](app/src/main/java/com/example/machinecodingroundapp/data/remote/VideoDto.kt), [VideoApiService](app/src/main/java/com/example/machinecodingroundapp/data/remote/VideoApiService.kt)
+    - mappers: [VideoMappers](app/src/main/java/com/example/machinecodingroundapp/data/mappers/VideoMappers.kt)
+    - repository: [VideoRepositoryImpl](app/src/main/java/com/example/machinecodingroundapp/data/repository/VideoRepositoryImpl.kt)
+  - domain
+    - model: [Video](app/src/main/java/com/example/machinecodingroundapp/domain/model/Video.kt)
+    - usecases: [GetAllVideosUseCase](app/src/main/java/com/example/machinecodingroundapp/domain/usecase/GetAllVideosUseCase.kt), [GetRandomVideosUseCase](app/src/main/java/com/example/machinecodingroundapp/domain/usecase/GetRandomVideosUseCase.kt), [GetVideoByIdUseCase](app/src/main/java/com/example/machinecodingroundapp/domain/usecase/GetVideoByIdUseCase.kt)
+  - di (Hilt modules): [NetworkModule](app/src/main/java/com/example/machinecodingroundapp/di/NetworkModule.kt), [DatabaseModule](app/src/main/java/com/example/machinecodingroundapp/di/DatabaseModule.kt), [RepositoryModule](app/src/main/java/com/example/machinecodingroundapp/di/RepositoryModule.kt), [UseCaseModule](app/src/main/java/com/example/machinecodingroundapp/di/UseCaseModule.kt), [PlayerModule](app/src/main/java/com/example/machinecodingroundapp/di/PlayerModule.kt), [AppModule](app/src/main/java/com/example/machinecodingroundapp/di/AppModule.kt)
+  - ui
+    - navigation: [AppNavHost](app/src/main/java/com/example/machinecodingroundapp/ui/navigation/AppNavHost.kt), [NavRoutes](app/src/main/java/com/example/machinecodingroundapp/ui/navigation/NavRoutes.kt)
+    - splash: [SplashScreen](app/src/main/java/com/example/machinecodingroundapp/ui/splash_screen/SplashScreen.kt)
+    - home: [HomeScreen](app/src/main/java/com/example/machinecodingroundapp/ui/home_screen/HomeScreen.kt), [HomeViewModel](app/src/main/java/com/example/machinecodingroundapp/ui/home_screen/HomeViewModel.kt)
+    - video player: [VideoPlayerScreen](app/src/main/java/com/example/machinecodingroundapp/ui/video_player_screen/VideoPlayerScreen.kt), [VideoPlayerViewModel](app/src/main/java/com/example/machinecodingroundapp/ui/video_player_screen/VideoPlayerViewModel.kt)
+  - utils: [NetworkMonitor](app/src/main/java/com/example/machinecodingroundapp/utils/NetworkMonitor.kt)
 
-Key files (open directly in GitHub for review):
+For a compact diagram you can also open the ASCII tree in `app/src/main/java/com/example/machinecodingroundapp/notes.txt` — the file contains the same structure in a single glance.
 
-- `app/src/main/java/com/example/machinecodingroundapp/MythikApplication.kt` — custom Coil ImageLoader + Hilt app annotation.
-- `app/src/main/java/com/example/machinecodingroundapp/MainActivity.kt` — Compose host and `AppNavHost` wiring.
-- `app/src/main/java/com/example/machinecodingroundapp/di/NetworkModule.kt` — provides `Retrofit` & `OkHttp`.
-- `app/src/main/java/com/example/machinecodingroundapp/data/remote/VideoApiService.kt` — Retrofit API.
-- `app/src/main/java/com/example/machinecodingroundapp/data/local/VideoDao.kt` and `VideoEntity.kt` — Room schema and DAO.
-- `app/src/main/java/com/example/machinecodingroundapp/data/repository/VideoRepositoryImpl.kt` — repository that bridges network + local DB.
-- `app/src/main/java/com/example/machinecodingroundapp/ui/home_screen/HomeScreen.kt` and `HomeViewModel.kt` — list + carousel UI and state management.
-- `app/src/main/java/com/example/machinecodingroundapp/ui/video_player_screen/VideoPlayerScreen.kt` and `VideoPlayerViewModel.kt` — ExoPlayer integration and fullscreen handling.
+Key files (click to open):
+
+- [MythikApplication.kt](app/src/main/java/com/example/machinecodingroundapp/MythikApplication.kt) — custom Coil ImageLoader + Hilt app annotation.
+- [MainActivity.kt](app/src/main/java/com/example/machinecodingroundapp/MainActivity.kt) — Compose host and `AppNavHost` wiring.
+- [NetworkModule.kt](app/src/main/java/com/example/machinecodingroundapp/di/NetworkModule.kt) — provides `Retrofit` & `OkHttp`.
+- [VideoApiService.kt](app/src/main/java/com/example/machinecodingroundapp/data/remote/VideoApiService.kt) — Retrofit API.
+- [VideoDao.kt](app/src/main/java/com/example/machinecodingroundapp/data/local/VideoDao.kt) and [VideoEntity.kt](app/src/main/java/com/example/machinecodingroundapp/data/local/VideoEntity.kt) — Room schema and DAO.
+- [VideoRepositoryImpl.kt](app/src/main/java/com/example/machinecodingroundapp/data/repository/VideoRepositoryImpl.kt) — repository that bridges network + local DB.
+- [HomeScreen.kt](app/src/main/java/com/example/machinecodingroundapp/ui/home_screen/HomeScreen.kt) and [HomeViewModel.kt](app/src/main/java/com/example/machinecodingroundapp/ui/home_screen/HomeViewModel.kt) — list + carousel UI and state management.
+- [VideoPlayerScreen.kt](app/src/main/java/com/example/machinecodingroundapp/ui/video_player_screen/VideoPlayerScreen.kt) and [VideoPlayerViewModel.kt](app/src/main/java/com/example/machinecodingroundapp/ui/video_player_screen/VideoPlayerViewModel.kt) — ExoPlayer integration and fullscreen handling.
 
 ## Major dependencies
 
