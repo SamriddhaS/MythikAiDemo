@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -15,7 +16,7 @@ import javax.inject.Singleton
 class NetworkMonitor @Inject constructor(private val app: Application) {
 
     private val connectivityManager: ConnectivityManager by lazy {
-        app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        app.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
     private val _isOnline = MutableStateFlow(isCurrentlyOnline())
@@ -27,8 +28,7 @@ class NetworkMonitor @Inject constructor(private val app: Application) {
         }
 
         override fun onLost(network: Network) {
-            // We check again because there might be another available network
-            _isOnline.value = isCurrentlyOnline()
+            _isOnline.value = false
         }
     }
 

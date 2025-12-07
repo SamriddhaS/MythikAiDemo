@@ -8,7 +8,7 @@ data class VideoEntity(
     @PrimaryKey val id: String,
     val title: String,
     val thumbnailUrl: String,
-    val duration: String,     // keep String because API gives "8:18"
+    val duration: String,
     val uploadTime: String,
     val views: String,
     val author: String,

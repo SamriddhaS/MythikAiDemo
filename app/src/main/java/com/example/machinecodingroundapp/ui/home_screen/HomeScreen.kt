@@ -229,13 +229,13 @@ fun CarouselSection(
 
                 val width by animateDpAsState(
                     targetValue = if (isSelected) 24.dp else 8.dp,
-                    label = "IndicatorWidth" // Optional label for debugging
+                    label = "IndicatorWidth"
                 )
 
                 Box(
                     modifier = Modifier
                         .height(8.dp)
-                        .width(width) // Use the animated width
+                        .width(width)
                         .clip(RoundedCornerShape(4.dp))
                         .background(
                             if (isSelected) MaterialTheme.colorScheme.primary
@@ -253,22 +253,22 @@ fun VideoRowItem(
     onVideoClicked: (Video) -> Unit
 ) {
     Row(
-        // Use a clip with a shape for a softer, more modern container
+
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp) // Slightly reduced height for a denser list
+            .height(100.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable { onVideoClicked(video) }
-            .padding(8.dp), // Add padding inside the clickable area
-        verticalAlignment = Alignment.CenterVertically // Align all children vertically
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        // --- Thumbnail Section ---
+
         Box(
             modifier = Modifier
                 .width(140.dp)
                 .fillMaxHeight()
-                .clip(RoundedCornerShape(8.dp)), // Round the thumbnail corners
-            contentAlignment = Alignment.BottomEnd // Position the duration at the bottom right
+                .clip(RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.BottomEnd
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -276,11 +276,11 @@ fun VideoRowItem(
                     .crossfade(true)
                     .build(),
                 contentDescription = video.title,
-                contentScale = ContentScale.Crop, // Use Crop for better fitting
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
 
-            // Add a small background behind the duration text for readability
+
             Box(
                 modifier = Modifier
                     .padding(4.dp)
@@ -297,25 +297,25 @@ fun VideoRowItem(
             }
         }
 
-        Spacer(modifier = Modifier.width(16.dp)) // Increased spacing for better separation
+        Spacer(modifier = Modifier.width(16.dp))
 
-        // --- Text Details Section ---
+
         Column(
-            // No need for SpaceBetween, let the natural spacing work
+
             modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.Top // Align text to the top
+            verticalArrangement = Arrangement.Top
         ) {
             Text(
                 text = video.title,
-                style = MaterialTheme.typography.titleMedium, // Use a more prominent style
+                style = MaterialTheme.typography.titleMedium,
                 maxLines = 2
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = video.description,
-                style = MaterialTheme.typography.bodySmall, // Softer style for description
+                style = MaterialTheme.typography.bodySmall,
                 maxLines = 2,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f) // De-emphasize
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
         }
     }

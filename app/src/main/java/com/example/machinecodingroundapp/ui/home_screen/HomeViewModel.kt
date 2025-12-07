@@ -99,7 +99,6 @@ class VideoViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // Refresh video from remote db.
-                // The `observeDatabase` collector will automatically pick up the new data.
                 repository.refreshVideos()
             } catch (e: Exception) {
                 // If the refresh fails and we have no local data, show an error.
