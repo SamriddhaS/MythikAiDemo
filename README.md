@@ -56,16 +56,16 @@ High-level architecture :
 - Offline-first pattern: UI observes a Room Flow as the single source of truth and the `VideoRepositoryImpl.refreshVideos()` writes API responses to the DB. This means the UI reacts only to DB changes and remains consistent across network transitions.
 - Network handling: `NetworkMonitor` exposes an `isOnline` StateFlow. `HomeViewModel` uses this to avoid unnecessary network calls when offline and to trigger refresh when connectivity returns.
 - Single-player model: `PlayerModule` provides a singleton ExoPlayer instance to maintain a single active playback session.
-- Error handling: `HomeViewModel` surfaces `Error` and `NoInternet` states; repository exceptions are sent to the ViewModel which decides whether to fallback to local DB.
+- Error handling: `HomeViewModel` handel's `Error` and `NoInternet` states; repository exceptions are sent to the ViewModel which decides whether to fallback to local DB.
 - Scoping & DI: Hilt modules are separated by concern (network, db, repo, usecases, player).
 
 ## Major dependencies
 
 - Kotlin & Android Gradle Plugin (Kotlin 2.x, AGP 8.x)
 - Jetpack Compose
-- Hilt (`com.google.dagger:hilt-android`, `hilt-compiler`) for dependency injection
-- Room (`androidx.room:room-runtime`, `room-ktx`, and KSP `room-compiler`) for local persistence
-- Retrofit (`com.squareup.retrofit2:retrofit`) + Gson converter for network
+- Hilt - for dependency injection
+- Room - for local persistence
+- Retrofit + Gson converter for network calls
 - OkHttp (`okhttp` + `logging-interceptor`)
-- ExoPlayer / media3 (`androidx.media3:media3-exoplayer`) for media playback
-- Coil (`io.coil-kt:coil-compose`) for image loading
+- ExoPlayer / media3 for media playback
+- Coil for image loading in compose
