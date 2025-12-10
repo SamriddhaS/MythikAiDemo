@@ -1,5 +1,6 @@
 package com.example.machinecodingroundapp.ui.home_screen
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -39,6 +41,9 @@ import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import androidx.compose.foundation.pager.HorizontalPager // And this one
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.ui.text.TextStyle
 
 @Composable
 fun HomeScreen(
@@ -109,6 +114,13 @@ fun HomeScreen(
                 loadedState = state,
                 onVideoClicked = { video ->
                     viewModel.onEvent(VideoUiEvent.OnVideoClicked(video))
+                },
+                onSearchInput = {
+                    input ->
+                    viewModel.onEvent(VideoUiEvent.SearchInputChanged(input))
+                },
+                toggleSort = {
+                    viewModel.onEvent(VideoUiEvent.ToggleSort)
                 }
             )
         }
@@ -119,7 +131,9 @@ fun HomeScreen(
 @Composable
 fun VideoListContent(
     loadedState: VideoScreenState.Loaded,
-    onVideoClicked: (Video) -> Unit
+    onVideoClicked: (Video) -> Unit,
+    onSearchInput : (input:String)->Unit,
+    toggleSort : ()->Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -132,6 +146,52 @@ fun VideoListContent(
             item {
                 CarouselSection(loadedState.carouselVideos, onVideoClicked = onVideoClicked)
                 Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            item {
+
+                TextField(
+                    value = loadedState.searchInput,
+                    onValueChange = { input ->
+                        Log.d("onSearchInput", "onSearchInput -- : $input")
+                        onSearchInput(input)
+                    },
+                    textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.DarkGray,
+                        unfocusedContainerColor = Color.DarkGray,
+                        disabledContainerColor = Color.DarkGray,
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp) // Increased height to better accommodate padding and text
+                        .padding(horizontal = 12.dp),
+                )
+
+            }
+
+            item{
+                val color = if(loadedState.isSorted) Color.Yellow else Color.Black
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .size(50.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(color)
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                        .clickable {
+                            toggleSort()
+                        },
+                    contentAlignment = Alignment.Center,
+
+                    ) {
+                    Text(
+                        text = "Sort By Name",
+                        color = Color.White,
+                        fontSize = 10.sp,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
             }
 
             items(loadedState.videos, key = {it.id}) { video ->

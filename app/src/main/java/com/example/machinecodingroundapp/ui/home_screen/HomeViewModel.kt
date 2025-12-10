@@ -10,6 +10,8 @@ import com.example.machinecodingroundapp.domain.usecase.GetAllVideosUseCase
 import com.example.machinecodingroundapp.domain.usecase.GetRandomVideosUseCase
 import com.example.machinecodingroundapp.utils.NetworkMonitor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,6 +31,8 @@ class VideoViewModel @Inject constructor(
     // Events for one-time actions (clicks, navigation, refresh)
     private val _uiEvent = MutableSharedFlow<VideoUiEvent>()
     val uiEvent: SharedFlow<VideoUiEvent> = _uiEvent.asSharedFlow()
+
+    var searchJob:Job? = null
 
     init {
         observeDatabaseAndNetwork()
@@ -125,8 +129,34 @@ class VideoViewModel @Inject constructor(
                 is VideoUiEvent.RefreshVideos -> {
                     loadVideos()
                 }
+
+                is VideoUiEvent.SearchInputChanged -> {
+                    val loaded = screenState.value as VideoScreenState.Loaded
+                    _screenState.value = loaded.copy(searchInput = event.input)
+                    searchJob?.cancel()// cancel existing job
+                    searchJob = launch {
+                        delay(500) // add 1sec debouncing effect
+                        performSearch(event.input)
+                    }
+                }
+
+                is VideoUiEvent.ToggleSort -> {
+                    handleToggleSort()
+                }
             }
         }
+    }
+
+    private suspend fun performSearch(searchInput: String){
+        val filteredVideos =  getAllVideosUseCase.searchVideos(searchInput)
+        _screenState.value = (screenState.value as VideoScreenState.Loaded).copy(videos = filteredVideos)
+    }
+
+    private suspend fun handleToggleSort(){
+        val loaded = screenState.value as VideoScreenState.Loaded
+        val isSorted = !loaded.isSorted // Toggle the current sorted state
+        val sortedVideos = getAllVideosUseCase.getSortedVideos(isSorted)
+        _screenState.value = loaded.copy(isSorted = isSorted, videos = sortedVideos)
     }
 }
 
@@ -137,11 +167,15 @@ sealed class VideoScreenState {
     data class Loaded(
         val videos: List<Video>,
         val carouselVideos: List<Video>,
-        val isOffline: Boolean = false //Offline - but showing data form local db
+        val isOffline: Boolean = false, //Offline - but showing data form local db
+        val searchInput: String = "",
+        val isSorted :Boolean = false
     ) : VideoScreenState()
 }
 
 sealed class VideoUiEvent {
     data class OnVideoClicked(val video: Video) : VideoUiEvent()
     object RefreshVideos : VideoUiEvent()
+    data class SearchInputChanged(val input: String) : VideoUiEvent()
+    object ToggleSort:VideoUiEvent()
 }
